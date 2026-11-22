@@ -1,225 +1,158 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>CareVault Clinic – Patient Records & TPA Claims for Maharashtra Clinics</title>
-<meta name="description" content="Android app for private clinics and nursing homes in Maharashtra: Camera OCR patient records and instant TPA insurance claim packets.">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CareVault | Zero-Leakage Insurance Claims for Indian Hospitals</title>
+<meta name="description" content="Catch missing ICP signatures, IRDAI non-payable consumables and TPA query triggers before submission. Android for wards, PC for billing desks.">
+<meta property="og:type" content="website"><meta property="og:title" content="CareVault | Zero-Leakage Claims Command Center">
+<meta property="og:description" content="Built for Indian Hospitals, Nursing Homes & Cashless TPA Desks."><meta property="og:image" content="https://carevault-clinic.vercel.app/og.png"><meta name="theme-color" content="#0D5C54">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230D5C54'/%3E%3Cpath d='M32 10 14 17v14c0 11 8 19 18 23 10-4 18-12 18-23V17z' fill='%23fff'/%3E%3Cpath d='m23 32 6 6 12-13' fill='none' stroke='%230D5C54' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.17"></script>
 <style>
-:root{--teal:#0f766e;--teal-d:#0b5a54;--teal-l:#ccfbf1;--ink:#0f172a;--mut:#475569;--bg:#f1f5f9;--line:#e2e8f0;--amber:#f59e0b;--r:20px}
-*{box-sizing:border-box;margin:0}html{scroll-behavior:smooth;scroll-padding-top:80px}
-body{font:16px/1.6 'Plus Jakarta Sans',system-ui,sans-serif;color:var(--ink);background:var(--bg);overflow-x:hidden}
-h1,h2,h3{font-family:Fraunces,Georgia,serif;line-height:1.15;letter-spacing:-.01em}
-a{color:inherit;text-decoration:none}:focus-visible{outline:3px solid var(--amber);outline-offset:2px}
-.wrap{max-width:1160px;margin:auto;padding:0 22px}section{padding:84px 0}
-.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 24px;border-radius:999px;font-weight:700;border:2px solid var(--teal);cursor:pointer;font:inherit;font-weight:700;transition:.25s}
-.btn.p{background:var(--teal);color:#fff;box-shadow:0 8px 24px -8px rgba(15,118,110,.6)}.btn.p:hover{background:var(--teal-d);transform:translateY(-2px)}
-.btn.s{background:#fff;color:var(--teal)}.btn.s:hover{background:var(--teal-l)}
-nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.7);backdrop-filter:blur(14px) saturate(1.6);-webkit-backdrop-filter:blur(14px) saturate(1.6);border-bottom:1px solid rgba(226,232,240,.8)}
-nav .wrap{display:flex;align-items:center;justify-content:space-between;height:68px;gap:16px}
-.logo{font:700 20px Fraunces,serif;display:flex;align-items:center;gap:9px;color:var(--teal)}
-.logo i{width:30px;height:30px;border-radius:9px;background:var(--teal);display:grid;place-items:center;color:#fff;font-style:normal;font-size:17px}
-.links{display:flex;gap:26px;font-weight:600;font-size:15px;color:var(--mut)}.links a:hover{color:var(--teal)}
-nav .btn{padding:9px 18px;font-size:14px}
-@media(max-width:940px){.links{display:none}}@media(max-width:480px){nav .btn{font-size:12px;padding:8px 12px}.logo span{display:none}}
-.hero{padding:64px 0 90px;background:radial-gradient(900px 500px at 85% 10%,#ccfbf188,transparent),linear-gradient(#fff,var(--bg))}
-.hero .wrap{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
-.badge{display:inline-block;background:var(--teal-l);color:var(--teal-d);font-weight:700;font-size:13px;padding:6px 14px;border-radius:999px;margin-bottom:18px}
-h1{font-size:clamp(2.2rem,5vw,3.6rem)}.lead{color:var(--mut);font-size:1.1rem;margin:20px 0 28px;max-width:56ch}
-.cta{display:flex;flex-wrap:wrap;gap:12px}.tpas{margin-top:26px;display:flex;flex-wrap:wrap;gap:8px}
-.tpas span{font-size:13px;font-weight:600;background:#fff;border:1px solid var(--line);padding:4px 12px;border-radius:8px;color:var(--mut)}
-@media(max-width:900px){.hero .wrap{grid-template-columns:1fr}}
-/* phone */
-.phone-w{display:grid;place-items:center;animation:fl 6s ease-in-out infinite}@keyframes fl{50%{transform:translateY(-12px)}}
-.phone{width:280px;height:560px;border-radius:40px;background:#0f172a;padding:10px;box-shadow:0 40px 80px -20px rgba(15,118,110,.5),0 0 0 2px #334155 inset;position:relative}
-.scr{height:100%;border-radius:31px;background:#fff;overflow:hidden;position:relative;display:flex;flex-direction:column}
-.notch{position:absolute;top:8px;left:50%;width:70px;height:18px;background:#0f172a;border-radius:99px;transform:translateX(-50%);z-index:5}
-.bar{background:var(--teal);color:#fff;padding:34px 16px 12px;font-weight:700;font-size:14px;display:flex;justify-content:space-between}
-.bar small{opacity:.8;font-weight:500}.st{flex:1;padding:14px;position:relative}
-.pane{position:absolute;inset:14px;opacity:0;transform:translateY(10px);transition:.5s;pointer-events:none}.pane.on{opacity:1;transform:none}
-.doc{background:#fefce8;border:1px solid #fde68a;border-radius:10px;height:230px;padding:14px;position:relative;overflow:hidden;font-size:11px;color:#713f12}
-.doc b{display:block;margin-bottom:8px}.ln{height:7px;background:#e7d9a8;border-radius:4px;margin:9px 0}
-.scan{position:absolute;left:0;right:0;height:3px;background:var(--teal);box-shadow:0 0 16px 4px #14b8a6;animation:sc 2.2s ease-in-out infinite}@keyframes sc{0%,100%{top:0}50%{top:100%}}
-.ext{margin-top:12px;font-size:12px}.ext div{background:var(--teal-l);color:var(--teal-d);padding:6px 10px;border-radius:8px;margin-bottom:6px;font-weight:600;opacity:0;transform:translateX(-8px);transition:.4s}.ext div.on{opacity:1;transform:none}
-.chk{list-style:none;padding:0;font-size:13px}.chk li{display:flex;align-items:center;gap:10px;padding:9px 10px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;font-weight:600}
-.chk li:before{content:'';width:18px;height:18px;border-radius:50%;border:2px solid var(--line);flex:none;transition:.3s}.chk li.on:before{background:var(--teal);border-color:var(--teal);box-shadow:inset 0 0 0 3px #fff}
-.ok{text-align:center;padding-top:30px}.ok .tick{width:76px;height:76px;border-radius:50%;background:var(--teal);color:#fff;font-size:38px;display:grid;place-items:center;margin:0 auto 14px;animation:pop .6s}@keyframes pop{from{transform:scale(0)}}
-.chip{display:inline-block;background:#dcfce7;color:#166534;font-size:12px;font-weight:700;padding:4px 12px;border-radius:99px;margin-top:8px}
-.dots{display:flex;justify-content:center;gap:6px;padding:10px}.dots i{width:7px;height:7px;border-radius:50%;background:var(--line);transition:.3s}.dots i.on{background:var(--teal);width:20px;border-radius:9px}
-/* reveal */
-.rv{opacity:0;transform:translateY(26px);transition:opacity .7s,transform .7s}.rv.in{opacity:1;transform:none}
-h2{font-size:clamp(1.8rem,3.6vw,2.6rem);margin-bottom:12px}.sub{color:var(--mut);max-width:60ch;margin-bottom:44px}
-.hd{text-align:center}.hd .sub{margin-inline:auto}
-/* slideshow */
-.deck{background:#fff;border-radius:28px;border:1px solid var(--line);box-shadow:0 30px 60px -30px rgba(15,23,42,.25);overflow:hidden;touch-action:pan-y}
-.sl-v{display:flex;transition:transform .6s cubic-bezier(.7,0,.2,1)}
-.sl{min-width:100%;display:grid;grid-template-columns:1fr 1fr;gap:30px;padding:46px;align-items:center}
-.sl .art{background:linear-gradient(135deg,var(--teal),#115e59);border-radius:22px;min-height:260px;display:grid;place-items:center;color:#fff;text-align:center;padding:24px}
-.sl .art big{font-size:64px;display:block;animation:fl 5s ease-in-out infinite}.sl .art code{background:#ffffff26;padding:6px 14px;border-radius:10px;font-size:15px;display:inline-block;margin-top:10px}
-.sl h3{font-size:1.7rem;margin:6px 0 12px}.sl p{color:var(--mut)}.sl .n{color:var(--teal);font-weight:700;font-size:14px}
-.ctl{display:flex;align-items:center;justify-content:space-between;padding:16px 24px;border-top:1px solid var(--line);flex-wrap:wrap;gap:12px}
-.ctl .g{display:flex;gap:8px;align-items:center}.ib{width:42px;height:42px;border-radius:50%;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:18px;color:var(--teal);transition:.2s}.ib:hover{background:var(--teal-l)}
-.dt{width:10px;height:10px;border-radius:50%;border:0;background:#cbd5e1;cursor:pointer;transition:.3s;padding:0}.dt.on{width:28px;border-radius:6px;background:var(--teal)}
-.pdf{display:flex;justify-content:center;margin-top:22px}
-@media(max-width:760px){.sl{grid-template-columns:1fr;padding:26px}}
-/* features */
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(310px,1fr));gap:22px}
-.card{background:#fff;border:1px solid var(--line);border-radius:var(--r);padding:28px;transition:.3s}
-.card:hover{transform:translateY(-6px);border-color:#5eead4;box-shadow:0 24px 40px -24px rgba(15,118,110,.45)}
-.ic{width:50px;height:50px;border-radius:14px;background:var(--teal-l);display:grid;place-items:center;font-size:24px;margin-bottom:16px;transition:.3s}.card:hover .ic{transform:rotate(-8deg) scale(1.1);background:var(--teal);filter:saturate(0) brightness(2)}
-.card h3{font-size:1.2rem;margin-bottom:8px}.card p{color:var(--mut);font-size:.95rem}
-/* steps */
-.steps{background:var(--teal);color:#fff;border-radius:32px;padding:60px 40px}.steps h2,.steps .sub{color:#fff}.steps .sub{opacity:.85}
-.sg{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:20px}
-.st3{background:#ffffff1a;border:1px solid #ffffff33;border-radius:var(--r);padding:26px}.st3 b{display:grid;place-items:center;width:38px;height:38px;background:#fff;color:var(--teal);border-radius:50%;margin-bottom:14px}
-.st3 h3{font-size:1.15rem;margin-bottom:6px}.st3 p{opacity:.88;font-size:.95rem}
-/* pricing */
-.tg{display:flex;justify-content:center;align-items:center;gap:14px;margin-bottom:40px;font-weight:600}
-.sw{width:62px;height:32px;border-radius:99px;background:var(--teal);border:0;position:relative;cursor:pointer}.sw:after{content:'';position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:#fff;transition:.3s}.sw.y:after{transform:translateX(30px)}
-.save{background:#fef3c7;color:#92400e;font-size:12px;padding:3px 10px;border-radius:99px}
-.pg{display:grid;grid-template-columns:repeat(auto-fit,minmax(290px,1fr));gap:22px;align-items:stretch}
-.pc{background:#fff;border:1px solid var(--line);border-radius:24px;padding:32px;position:relative;display:flex;flex-direction:column}
-.pc.hi{border:2px solid var(--teal);box-shadow:0 30px 50px -28px rgba(15,118,110,.55);transform:translateY(-8px)}
-.pop{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--amber);color:#451a03;font-weight:700;font-size:12px;padding:4px 14px;border-radius:99px;white-space:nowrap}
-.price{font:700 2.8rem Fraunces,serif;margin:14px 0 2px;color:var(--teal)}.price small{font:500 1rem 'Plus Jakarta Sans';color:var(--mut)}
-.pc ul{list-style:none;padding:0;margin:18px 0 26px;flex:1}.pc li{padding:7px 0 7px 28px;position:relative;font-size:.95rem;color:var(--mut)}.pc li:before{content:'✓';position:absolute;left:0;color:var(--teal);font-weight:700}
-.pc .btn{justify-content:center}
-.setup{margin-top:30px;background:linear-gradient(100deg,#115e59,var(--teal));color:#fff;border-radius:22px;padding:26px 32px;display:flex;justify-content:space-between;align-items:center;gap:18px;flex-wrap:wrap}
-.setup h3{font-size:1.25rem}.setup p{opacity:.9;font-size:.95rem}.setup b{font:700 1.8rem Fraunces,serif}
-/* faq */
-.faq{max-width:780px;margin:auto}.fq{background:#fff;border:1px solid var(--line);border-radius:16px;margin-bottom:12px;overflow:hidden}
-.fq button{width:100%;text-align:left;padding:20px 24px;background:none;border:0;font:700 1rem 'Plus Jakarta Sans';cursor:pointer;display:flex;justify-content:space-between;gap:14px;color:var(--ink)}
-.fq button:after{content:'+';font-size:24px;color:var(--teal);transition:.3s;line-height:1}.fq.o button:after{transform:rotate(45deg)}
-.fa{max-height:0;overflow:hidden;transition:max-height .4s;color:var(--mut)}.fa p{padding:0 24px 20px}
-footer{background:#0f172a;color:#cbd5e1;padding:56px 0 30px;font-size:14px}
-footer .fg{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:32px}footer h4{color:#fff;margin-bottom:10px}footer a{color:#5eead4}
-footer .cp{border-top:1px solid #334155;margin-top:34px;padding-top:20px;text-align:center;color:#94a3b8}
-@media(max-width:760px){footer .fg{grid-template-columns:1fr}.steps{padding:40px 22px}.pc.hi{transform:none}}
-@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}.rv{opacity:1;transform:none}}
-</style>
-</head>
-<body>
-<nav><div class="wrap">
-<a class="logo" href="#top"><i>✚</i><span>CareVault Clinic</span></a>
-<div class="links"><a href="#features">Features</a><a href="#tour">App Tour</a><a href="#install">Install Guide</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a></div>
-<a class="btn p" href="https://github.com/jackkkkk9182-rgb/carevault-clinic-web/releases/latest/download/carevault-clinic.apk" target="_blank" rel="noopener">Download APK (v1.0.4)</a>
-</div></nav>
+:root{--t:#0D5C54;--td:#063B36;--bg:#F7FAF9;--ink:#0F172A;--e:#10B981;--a:#F59E0B;--ease:cubic-bezier(.16,1,.3,1)}
+html{scroll-behavior:smooth;scroll-padding-top:80px}body{font-family:Inter,sans-serif;background:var(--bg);color:var(--ink)}
+h1,h2,h3,.jk{font-family:'Plus Jakarta Sans',sans-serif}
+.card{position:relative;background:#fff;border:1px solid #e2e8f0;border-radius:20px;transition:transform .5s var(--ease);transform:perspective(900px) rotateX(var(--rx,0)) rotateY(var(--ry,0));will-change:transform}
+.card::before{content:"";position:absolute;inset:-1px;border-radius:inherit;padding:1px;background:radial-gradient(260px circle at var(--mouse-x,50%) var(--mouse-y,50%),rgba(13,92,84,.7),transparent 60%);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .3s;pointer-events:none}
+.card:hover::before{opacity:1}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;padding:.9rem 1.5rem;border-radius:14px;font-weight:600;transition:transform .5s var(--ease),box-shadow .5s var(--ease);position:relative;overflow:hidden;will-change:transform}
+.btn-p{background:linear-gradient(135deg,var(--t),var(--td));color:#fff;box-shadow:0 10px 30px -10px rgba(13,92,84,.7)}
+.btn-p::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.35) 50%,transparent 65%);transform:translateX(-120%);transition:transform .9s var(--ease)}
+.btn-p:hover::after{transform:translateX(120%)}
+.btn-d{background:var(--ink);color:#fff;border:1px solid #334155}
+.sm{padding:.5rem .9rem;border-radius:10px;font-size:.85rem}
+.glass{background:rgba(255,255,255,.72);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid rgba(15,23,42,.06)}
+.rv{opacity:0;transform:translateY(28px);transition:opacity .9s var(--ease),transform .9s var(--ease);transition-delay:calc(var(--i,0)*80ms)}.rv.in{opacity:1;transform:none}
+#intro{position:fixed;inset:0;z-index:100;background:var(--td);display:grid;place-items:center;transition:opacity .5s var(--ease) 1.2s,visibility 0s 1.7s}
+#intro.done{opacity:0;visibility:hidden}
+#intro .glow{position:absolute;width:20px;height:20px;border-radius:50%;background:radial-gradient(circle,rgba(16,185,129,.6),transparent 70%);animation:glow 1.2s var(--ease) forwards}
+@keyframes glow{to{transform:scale(60)}}
+#intro .dr{stroke-dasharray:90;stroke-dashoffset:90;animation:draw .9s var(--ease) .2s forwards}@keyframes draw{to{stroke-dashoffset:0}}
+.mask{overflow:hidden;display:block}.mask span{display:block;transform:translateY(110%);animation:up .9s var(--ease) .5s forwards}@keyframes up{to{transform:none}}
+.mq{display:flex;gap:1rem;width:max-content;animation:mq 40s linear infinite}@keyframes mq{to{transform:translateX(-50%)}}
+.pulse{stroke-dasharray:14 400;animation:flow 3s linear infinite;filter:drop-shadow(0 0 4px #10B981)}@keyframes flow{to{stroke-dashoffset:-414}}
+.tab[aria-selected=true]{background:var(--t);color:#fff}
+.faq div{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s var(--ease)}.faq div>p{overflow:hidden}.faq.open div{grid-template-rows:1fr}.faq.open .pl{transform:rotate(45deg)}
+.modal{position:fixed;inset:0;z-index:90;display:none;place-items:center;background:rgba(6,59,54,.5);backdrop-filter:blur(8px);padding:1rem}.modal.show{display:grid}
+.modal>div{background:rgba(255,255,255,.92);border-radius:24px;max-width:560px;width:100%;max-height:85vh;overflow:auto;padding:2rem;animation:pop .6s var(--ease)}@keyframes pop{from{opacity:0;transform:translateY(20px) scale(.96)}}
+input[type=range]{accent-color:var(--t);width:100%}
+:focus-visible{outline:3px solid var(--e);outline-offset:2px}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;transition-delay:0s!important}.rv{opacity:1;transform:none}#intro{display:none}.mask span{transform:none}}
+</style></head><body>
 
-<header class="hero" id="top"><div class="wrap">
-<div>
-<span class="badge">Built for private clinics &amp; nursing homes in Maharashtra</span>
-<h1>Organize Patient Records &amp; TPA Insurance Claims in Seconds.</h1>
-<p class="lead">Scan prescriptions, bills and policy cards with Camera OCR. Keep every patient in your own private Hospital ID workspace (CV-XXXXXXXXXX). Then compile a claim packet for Medi Assist, Vidal, Paramount, Star Health or Policybazaar with one tap.</p>
-<div class="cta">
-<a class="btn p" href="https://github.com/jackkkkk9182-rgb/carevault-clinic-web/releases/latest/download/carevault-clinic.apk" target="_blank" rel="noopener">Download Android APK (v1.0.4)</a>
-<a class="btn s" href="#tour">Explore App Slideshow</a></div>
-<div class="tpas"><span>Medi Assist</span><span>Vidal</span><span>Paramount</span><span>Star Health</span><span>Policybazaar</span></div>
+<div id="intro" aria-hidden="true"><div class="glow"></div>
+<div class="relative text-center text-white">
+<svg width="96" height="96" viewBox="0 0 64 64" class="mx-auto"><path d="M32 8 12 16v15c0 12 9 21 20 25 11-4 20-13 20-25V16z" fill="#fff"/><path class="dr" d="m22 32 7 7 13-15" fill="none" stroke="#0D5C54" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+<h2 class="mask jk text-2xl font-bold mt-5"><span>Welcome to CareVault</span></h2></div></div>
+
+<header class="glass fixed top-0 inset-x-0 z-50"><nav class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between" aria-label="Main">
+<a href="#top" class="flex items-center gap-2 jk font-extrabold text-lg">
+<svg width="32" height="32" viewBox="0 0 64 64"><defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#0D5C54"/><stop offset="1" stop-color="#063B36"/></linearGradient></defs><rect width="64" height="64" rx="14" fill="url(#lg)"/><path d="M32 10 14 17v14c0 11 8 19 18 23 10-4 18-12 18-23V17z" fill="#fff"/><path d="m23 32 6 6 12-13" fill="none" stroke="#0D5C54" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>CareVault</a>
+<div class="hidden lg:flex gap-6 text-sm font-medium text-slate-600">
+<a href="#workflow" class="hover:text-teal-800">Workflow</a><a href="#platforms" class="hover:text-teal-800">Android vs. PC</a><a href="#calculator" class="hover:text-teal-800">Leakage Calculator</a><a href="#pricing" class="hover:text-teal-800">Pricing</a><a href="#faq" class="hover:text-teal-800">FAQ</a></div>
+<div class="flex gap-2"><a class="btn btn-p sm mag" href="https://github.com/jackkkkk9182-rgb/carevault-clinic-web/releases/download/v2.0.0/CareVault.apk">Download APK</a><button class="btn btn-d sm gate">PC Workspace</button></div></nav></header>
+
+<main id="top">
+<section class="pt-32 pb-16 px-4 relative overflow-hidden" style="background:radial-gradient(900px 400px at 50% 0,rgba(16,185,129,.12),transparent)">
+<div class="max-w-5xl mx-auto text-center">
+<p class="inline-block rounded-full border border-teal-800/20 bg-white px-4 py-1.5 text-xs sm:text-sm text-teal-900 font-medium rv">Welcome to CareVault • Built for Indian Hospitals, Nursing Homes &amp; Cashless TPA Desks</p>
+<h1 class="jk font-extrabold text-4xl sm:text-6xl lg:text-7xl tracking-tight mt-6 leading-[1.05] rv" style="--i:1">Zero-Leakage Insurance Claims &amp; Settlement Command Center.</h1>
+<p class="mt-6 text-lg text-slate-600 max-w-3xl mx-auto rv" style="--i:2">Catch missing ICP signatures, IRDAI non-payable consumables, and TPA query triggers before submission—seamlessly split between floor nurses on Android and billing desks on PC.</p>
+<div class="mt-9 flex flex-col sm:flex-row gap-3 justify-center rv" style="--i:3">
+<a class="btn btn-p mag" href="https://github.com/jackkkkk9182-rgb/carevault-clinic-web/releases/download/v2.0.0/CareVault.apk">Download Android App (.apk) <small class="opacity-70 font-normal">v2.0 • Android 8.0+</small></a>
+<button class="btn btn-d mag gate">Open Desktop Workspace (PC Only)</button></div>
+<a class="inline-block mt-5 text-sm font-semibold text-teal-800 underline underline-offset-4 rv" style="--i:4" target="_blank" rel="noopener" href="https://wa.me/?text=Hi%20CareVault%2C%20I%27d%20like%20to%20book%20a%2015-minute%20hospital%20onboarding%20walkthrough.">Book a 15-Min Hospital Onboarding Walkthrough on WhatsApp</a>
 </div>
-<div class="phone-w"><div>
-<div class="phone"><div class="notch"></div><div class="scr">
-<div class="bar"><span id="pt">Scan document</span><small>CV-4821907356</small></div>
-<div class="st">
-<div class="pane on" id="p0"><div class="doc"><div class="scan"></div><b>Dr. R. Kulkarni · Pune</b><div class="ln" style="width:80%"></div><div class="ln" style="width:60%"></div><div class="ln" style="width:90%"></div><div class="ln" style="width:50%"></div><div class="ln" style="width:70%"></div></div>
-<div class="ext"><div>Patient: Sunita Patil, 54 F</div><div>Rx: Amoxicillin 500 mg × 5 days</div><div>Bill total: ₹18,450</div></div></div>
-<div class="pane" id="p1"><p style="font-weight:700;margin-bottom:12px">Claim packet · Star Health</p><ul class="chk"><li>Prescription</li><li>Discharge summary</li><li>Lab bills</li><li>Policy card</li></ul><div class="chip" style="background:var(--teal-l);color:var(--teal-d)">Compiling packet…</div></div>
-<div class="pane" id="p2"><div class="ok"><div class="tick">✓</div><b>Packet ready</b><p style="font-size:13px;color:var(--mut)">Sunita Patil · ₹18,450</p><span class="chip">Submitted to Star Health</span></div></div>
-</div><div class="dots" id="pd"><i class="on"></i><i></i><i></i></div></div></div>
-</div></div>
-</div></header>
 
-<section id="tour"><div class="wrap">
-<div class="hd rv"><h2>See CareVault Clinic in five slides</h2><p class="sub">Swipe, tap the arrows or let it auto-play.</p></div>
-<div class="deck rv" id="deck" aria-roledescription="carousel">
-<div class="sl-v" id="sv"></div>
-<div class="ctl"><div class="g"><button class="ib" id="prev" aria-label="Previous slide">‹</button><button class="ib" id="next" aria-label="Next slide">›</button><button class="btn s" id="ap" style="padding:8px 16px;font-size:14px">⏸ Auto-play on</button></div><div class="g" id="dts"></div></div>
-</div>
-<div class="pdf rv"><a class="btn p" href="./carevault-presentation.pdf" download="CareVault-Clinic-Presentation.pdf">Download Clinic Presentation PDF</a></div>
-</div></section>
+<div id="workflow" class="max-w-5xl mx-auto mt-14 card p-4 sm:p-8 rv overflow-x-auto">
+<svg viewBox="0 0 960 220" class="min-w-[680px] w-full" role="img" aria-label="Data flows from Android Ward Scanner to CareVault AI Audit Engine to PC Split-Screen Billing Desk to a TPA Portal Packet under 4.5 MB">
+<defs><linearGradient id="g2"><stop stop-color="#0D5C54"/><stop offset="1" stop-color="#063B36"/></linearGradient></defs>
+<g id="paths" fill="none" stroke="#cbd5e1" stroke-width="2"><path id="p1" d="M170 110C215 40 245 40 290 110"/><path id="p2" d="M450 110C495 180 525 180 570 110"/><path id="p3" d="M730 110C775 40 805 40 850 110"/></g>
+<g fill="none" stroke="#10B981" stroke-width="4" stroke-linecap="round"><path class="pulse" d="M170 110C215 40 245 40 290 110"/><path class="pulse" style="animation-delay:.9s" d="M450 110C495 180 525 180 570 110"/><path class="pulse" style="animation-delay:1.8s" d="M730 110C775 40 805 40 850 110"/></g>
+<g font-family="Plus Jakarta Sans" font-weight="700" font-size="14" text-anchor="middle">
+<rect x="20" y="70" width="150" height="80" rx="16" fill="#fff" stroke="#0D5C54"/><text x="95" y="106">Android Ward</text><text x="95" y="126">Scanner</text>
+<rect x="290" y="70" width="160" height="80" rx="16" fill="url(#g2)"/><text x="370" y="106" fill="#fff">CareVault AI</text><text x="370" y="126" fill="#fff">Audit Engine</text>
+<rect x="570" y="70" width="160" height="80" rx="16" fill="#fff" stroke="#0D5C54"/><text x="650" y="102">PC Split-Screen</text><text x="650" y="122">Billing Desk</text>
+<rect x="850" y="70" width="100" height="80" rx="16" fill="#fff" stroke="#F59E0B" stroke-width="2"/><text x="900" y="98" font-size="12">&lt; 4.5 MB</text><text x="900" y="115" font-size="12">TPA Portal</text><text x="900" y="132" font-size="12">Packet</text></g></svg></div>
+</section>
 
-<section id="features" style="background:#fff"><div class="wrap">
-<div class="hd rv"><h2>Everything a clinic front desk needs</h2><p class="sub">Replace paper files and WhatsApp photos with one organized, private system.</p></div>
-<div class="grid" id="fg"></div>
-</div></section>
+<section class="py-10 px-4"><div class="max-w-6xl mx-auto grid grid-cols-2 lg:grid-cols-4 gap-3 text-sm font-semibold text-center">
+<div class="card p-4 rv">Tenant-Isolated CV-ID Vault</div><div class="card p-4 rv" style="--i:1">Indian DPDP Act 2023 &amp; Encrypted Storage</div><div class="card p-4 rv" style="--i:2">Maker -&gt; Checker Role Controls</div><div class="card p-4 rv" style="--i:3">IRDAI &amp; PM-JAY Rule Engine</div></div>
+<div class="overflow-hidden mt-8" aria-label="Supported TPAs and insurers"><div class="mq" id="mq"></div></div></section>
 
-<section id="install"><div class="wrap"><div class="steps rv">
-<div class="hd"><h2>Install in three steps</h2><p class="sub">No Play Store needed. Works on any modern Android phone.</p></div>
-<div class="sg">
-<div class="st3"><b>1</b><h3>Download the APK</h3><p>Download <strong>carevault-clinic.apk</strong> from the button below.</p></div>
-<div class="st3"><b>2</b><h3>Allow installation</h3><p>Tap Settings → Allow from this source when Android asks.</p></div>
-<div class="st3"><b>3</b><h3>Verify and start</h3><p>Install, verify your Admin email with a 6-digit OTP, and start your 14-Day Free Trial.</p></div>
-</div>
-<div style="text-align:center;margin-top:34px"><a class="btn" style="background:#fff;color:var(--teal);border-color:#fff" href="https://github.com/jackkkkk9182-rgb/carevault-clinic-web/releases/latest/download/carevault-clinic.apk" target="_blank" rel="noopener">Download APK (v1.0.4)</a></div>
-</div></div></section>
+<section id="platforms" class="py-20 px-4"><div class="max-w-6xl mx-auto">
+<h2 class="jk font-extrabold text-3xl sm:text-5xl tracking-tight text-center rv">One claim. Two desks. No overlap.</h2>
+<div role="tablist" class="mt-8 mx-auto w-fit flex p-1 bg-white border rounded-2xl rv">
+<button role="tab" aria-selected="true" class="tab px-5 py-2 rounded-xl font-semibold transition" data-t="0">Android App</button><button role="tab" aria-selected="false" class="tab px-5 py-2 rounded-xl font-semibold transition" data-t="1">PC Workspace</button></div>
+<div class="mt-8 grid lg:grid-cols-2 gap-6" id="plat"></div></div></section>
 
-<section id="pricing" style="padding-top:20px"><div class="wrap">
-<div class="hd rv"><h2>Simple pricing for clinics of every size</h2><p class="sub">Start free. Pick a plan when you're ready.</p></div>
-<div class="tg rv"><span>Monthly</span><button class="sw" id="sw" aria-label="Toggle yearly billing"></button><span>Yearly <em class="save" style="font-style:normal">Save ~17%</em></span></div>
-<div class="pg">
-<div class="pc rv"><h3>14-Day Free Trial</h3><div class="price">₹0</div><small style="color:var(--mut)">No card needed</small>
-<ul><li>1 Admin + up to 2 Doctors/Staff</li><li>50 OCR scans</li><li>Up to 15 patient folders</li></ul><a class="btn s" href="https://github.com/jackkkkk9182-rgb/carevault-clinic-web/releases/latest/download/carevault-clinic.apk" target="_blank" rel="noopener">Start free trial</a></div>
-<div class="pc hi rv"><span class="pop">Most Popular</span><h3>Starter Clinic Plan</h3><div class="price">₹<span class="num" data-m="999" data-y="9999">999</span><small class="per"> /month</small></div><small style="color:var(--mut)">&nbsp;</small>
-<ul><li>1 Admin + up to 3 Doctors/Staff</li><li>300 OCR scans/month</li><li>Unlimited patient folders &amp; claim packets</li></ul><a class="btn p" href="https://github.com/jackkkkk9182-rgb/carevault-clinic-web/releases/latest/download/carevault-clinic.apk" target="_blank" rel="noopener">Download APK (v1.0.4)</a></div>
-<div class="pc rv"><h3>Multi-Doctor / Nursing Home Pro</h3><div class="price">₹<span class="num" data-m="2499" data-y="24999">2,499</span><small class="per"> /month</small></div><small style="color:var(--mut)">&nbsp;</small>
-<ul><li>Unlimited Doctors &amp; Staff</li><li>1,500 OCR scans/month</li><li>Priority WhatsApp support</li><li>Settlement analytics</li></ul><a class="btn s" href="https://github.com/jackkkkk9182-rgb/carevault-clinic-web/releases/latest/download/carevault-clinic.apk" target="_blank" rel="noopener">Download APK (v1.0.4)</a></div>
-</div>
-<div class="setup rv"><div><h3>Optional: Hands-On Clinic Setup &amp; Staff Training</h3><p>We visit or call in, set up your workspace and train your team.</p></div><b>₹1,500 <small style="font:500 14px 'Plus Jakarta Sans';opacity:.85">one-time</small></b></div>
-</div></section>
+<section id="calculator" class="py-20 px-4" style="background:linear-gradient(180deg,var(--td),var(--t));color:#fff"><div class="max-w-4xl mx-auto">
+<h2 class="jk font-extrabold text-3xl sm:text-5xl text-center tracking-tight">What is leakage costing your hospital?</h2>
+<div class="mt-10 bg-white text-slate-900 rounded-3xl p-6 sm:p-10 grid md:grid-cols-2 gap-8">
+<div class="space-y-7"><label class="block font-semibold">Monthly Cashless Claims: <b id="vc" class="text-teal-800"></b><input id="c" type="range" min="20" max="2000" step="10" value="300"></label>
+<label class="block font-semibold">Average Claim Amount: <b id="va" class="text-teal-800"></b><input id="a" type="range" min="10000" max="500000" step="5000" value="80000"></label>
+<p class="text-xs text-slate-500">Assumptions (edit to match your hospital): 5% of claim value is exposed to non-payable consumables and avoidable TPA queries; CareVault helps recover 60% of it; cost is Hospital Pro at ₹9,999/mo.</p></div>
+<div class="space-y-4"><div class="rounded-2xl bg-slate-50 p-5"><div class="text-sm text-slate-500">Estimated annual leakage</div><div id="o1" class="jk text-3xl font-extrabold text-amber-600"></div></div>
+<div class="rounded-2xl bg-slate-50 p-5"><div class="text-sm text-slate-500">Recoverable per year after plan cost</div><div id="o2" class="jk text-3xl font-extrabold text-emerald-600"></div></div>
+<div class="rounded-2xl bg-slate-50 p-5"><div class="text-sm text-slate-500">ROI on Hospital Pro</div><div id="o3" class="jk text-3xl font-extrabold text-teal-800"></div></div></div></div></div></section>
 
-<section id="faq" style="background:#fff"><div class="wrap">
-<div class="hd rv"><h2>Questions from clinic owners</h2></div>
-<div class="faq rv" id="fqs"></div>
-</div></section>
+<section id="pricing" class="py-20 px-4"><div class="max-w-7xl mx-auto">
+<h2 class="jk font-extrabold text-3xl sm:text-5xl text-center tracking-tight">Simple monthly pricing</h2><p class="text-center text-slate-600 mt-3">Billed monthly. Every plan includes the Android app and PC Desktop Workspace access.</p>
+<div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5" id="price"></div></div></section>
 
-<footer><div class="wrap">
-<div class="fg">
-<div><div class="logo" style="color:#fff;margin-bottom:12px"><i>✚</i>CareVault Clinic</div><p>Patient records and TPA claim packets for private clinics and nursing homes.</p><p style="margin-top:10px">📍 Maharashtra, India</p></div>
-<div><h4>Privacy summary</h4><p>Each clinic's data lives in its own Hospital ID workspace. Access is role-based and designed in line with India's DPDP Act. We never sell patient data.</p></div>
-<div><h4>Terms &amp; support</h4><p>Use of the app is for licensed clinical and administrative staff. Subscriptions can be cancelled anytime.</p><p style="margin-top:10px">✉ <a href="mailto:carevaultclinic.in@gmail.com">carevaultclinic.in@gmail.com</a></p></div>
-</div>
-<div class="cp">© 2026 CareVault Clinic. All rights reserved.</div>
-</div></footer>
+<section id="faq" class="py-20 px-4"><div class="max-w-3xl mx-auto"><h2 class="jk font-extrabold text-3xl sm:text-4xl text-center tracking-tight">Questions hospital owners ask</h2><div class="mt-8 space-y-3" id="fq"></div></div></section>
+</main>
+
+<footer class="bg-[#063B36] text-white/80 py-12 px-4"><div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between gap-6 items-start">
+<div><div class="flex items-center gap-2 jk font-extrabold text-xl text-white"><svg width="32" height="32" viewBox="0 0 64 64"><rect width="64" height="64" rx="14" fill="#0D5C54"/><path d="M32 10 14 17v14c0 11 8 19 18 23 10-4 18-12 18-23V17z" fill="#fff"/><path d="m23 32 6 6 12-13" fill="none" stroke="#0D5C54" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/></svg>CareVault</div>
+<p class="mt-3 text-sm">Support: <a class="underline" href="mailto:carevaultclinic.in@gmail.com">carevaultclinic.in@gmail.com</a></p></div>
+<div class="flex gap-5 text-sm"><button class="underline" data-m="priv">Privacy Policy</button><button class="underline" data-m="terms">Terms of Service</button></div></div>
+<p class="max-w-6xl mx-auto mt-8 text-xs text-white/50">© 2026 CareVault. All rights reserved.</p></footer>
+
+<div class="modal" id="pcm" role="dialog" aria-modal="true" aria-labelledby="pct"><div class="text-center">
+<h3 id="pct" class="jk text-2xl font-extrabold">The desktop workspace needs a PC</h3><p class="mt-3 text-slate-600">Open it on a laptop or desktop with a 1024px+ screen. On this device, use the Android app instead.</p>
+<div class="mt-6 grid gap-3"><a class="btn btn-p" href="https://github.com/jackkkkk9182-rgb/carevault-clinic-web/releases/download/v2.0.0/CareVault.apk">Download Android App (.apk)</a><button class="btn btn-d" id="cp">Copy Workspace Link for PC</button><button class="text-sm text-slate-500 underline mt-1" data-close>Close</button></div></div></div>
+<div class="modal" id="priv" role="dialog" aria-modal="true"><div><h3 class="jk text-2xl font-extrabold">Privacy Policy</h3><div class="mt-4 space-y-3 text-sm text-slate-700">
+<p>CareVault processes claim documents and patient details on behalf of your hospital, which remains the data fiduciary under the Digital Personal Data Protection Act, 2023. We act as a processor.</p>
+<p>Each hospital's data is isolated under its own CV-ID and stored encrypted. We use it only to deliver audits, packets and ledgers, and we do not sell it or use it for advertising.</p>
+<p>Hospitals can request export or deletion of their data at any time. Write to carevaultclinic.in@gmail.com.</p></div><button class="btn btn-p mt-6 sm" data-close>Close</button></div></div>
+<div class="modal" id="terms" role="dialog" aria-modal="true"><div><h3 class="jk text-2xl font-extrabold">Terms of Service</h3><div class="mt-4 space-y-3 text-sm text-slate-700">
+<p>CareVault is a claim-preparation aid. AI audit flags guide your team but do not guarantee TPA or insurer approval; your staff remain responsible for submissions.</p>
+<p>Plans are billed monthly in advance. The 14-day pilot carries no charge, and you can cancel any time before the next cycle. Accounts are for the subscribing hospital and its authorised staff.</p>
+<p>You must hold the right to upload the documents you submit. Questions: carevaultclinic.in@gmail.com.</p></div><button class="btn btn-p mt-6 sm" data-close>Close</button></div></div>
 
 <script>
-const $=s=>document.querySelector(s);
-// features
-const F=[['📷','Smart Camera OCR','Snap prescriptions, bills and policy cards. Text is extracted and filed to the right patient folder.'],['📦','1-Click TPA Claim Packets','Compile clean, complete packets for your TPA without re-typing or chasing papers.'],['📊','Settlement Dashboard','Track every claim from submitted to approved to settled, with payout amounts in one view.'],['🔒','Isolated Hospital ID Workspace','Your CV-XXXXXXXXXX workspace is separate from every other clinic, with DPDP-aligned role access.'],['👥','Instant Team Management','Add or remove Doctors and Receptionists in one tap, and revoke access immediately.'],['⚡','Light & Fast on Mobile Data','A small APK that works smoothly on 4G, even where clinic Wi-Fi is patchy.']];
-$('#fg').innerHTML=F.map((f,i)=>`<div class="card rv" style="transition-delay:${i%3*90}ms"><div class="ic">${f[0]}</div><h3>${f[1]}</h3><p>${f[2]}</p></div>`).join('');
-// FAQ
-const Q=[['Is patient data private per clinic?','Yes. Each clinic gets its own isolated Hospital ID workspace (CV-XXXXXXXXXX). Staff only see what their role allows, in line with DPDP principles, and the Admin can revoke access at any time.'],['How do we install the APK on Android?','Download carevault-clinic.apk, tap Settings → Allow from this source, then install. Verify the Admin email with the 6-digit OTP and you are ready.'],['What happens after the 14-day free trial?','Your data stays safe. Choose the Starter Clinic or Nursing Home Pro plan to keep scanning and creating claim packets, or export your records.'],['Which TPAs are supported?','Medi Assist, Vidal, Paramount, Star Health and Policybazaar. Packets are compiled in a clean, submission-ready format for each.']];
-$('#fqs').innerHTML=Q.map(q=>`<div class="fq"><button aria-expanded="false">${q[0]}</button><div class="fa"><p>${q[1]}</p></div></div>`).join('');
-document.querySelectorAll('.fq button').forEach(b=>b.onclick=()=>{const f=b.parentNode,a=f.querySelector('.fa'),o=f.classList.toggle('o');a.style.maxHeight=o?a.scrollHeight+'px':0;b.setAttribute('aria-expanded',o)});
-// slides
-const S=[['🏥','Private Clinic Workspace','Create your Hospital ID and verify the Admin email with a 6-digit OTP. Your records stay isolated from every other clinic.','CV-XXXXXXXXXX'],['📷','Smart Camera OCR Scanning','Snap prescriptions, discharge summaries, lab bills and policy cards. Text is extracted automatically.','Scanning… 98% read'],['📦','1-Click TPA Claim Packets','Compile patient documents into a clean packet for Medi Assist, Vidal, Paramount, Star Health or Policybazaar.','Packet · 4 documents'],['📊','Real-Time Settlement Tracker','Monitor submitted, approved and settled claim payouts so you always know what is pending.','Submitted → Approved → Settled'],['👥','Role-Based Team Control','Add Doctors and Receptionists, or revoke staff access in one tap.','Doctor · Receptionist · Revoke']];
-$('#sv').innerHTML=S.map((s,i)=>`<div class="sl"><div class="art"><div><big>${s[0]}</big><code>${s[3]}</code></div></div><div><span class="n">Slide ${i+1} of 5</span><h3>${s[1]}</h3><p>${s[2]}</p></div></div>`).join('');
-$('#dts').innerHTML=S.map((_,i)=>`<button class="dt" aria-label="Go to slide ${i+1}"></button>`).join('');
-let cur=0,auto=true,tm;const dts=[...document.querySelectorAll('.dt')];
-function go(i){cur=(i+5)%5;$('#sv').style.transform=`translateX(-${cur*100}%)`;dts.forEach((d,j)=>d.classList.toggle('on',j===cur))}
-function play(){clearInterval(tm);if(auto)tm=setInterval(()=>go(cur+1),5000);$('#ap').textContent=auto?'⏸ Auto-play on':'▶ Auto-play off'}
-$('#prev').onclick=()=>{go(cur-1);play()};$('#next').onclick=()=>{go(cur+1);play()};
-$('#ap').onclick=()=>{auto=!auto;play()};dts.forEach((d,i)=>d.onclick=()=>{go(i);play()});
-let x0=null;const dk=$('#deck');
-dk.addEventListener('touchstart',e=>x0=e.touches[0].clientX,{passive:true});
-dk.addEventListener('touchend',e=>{if(x0===null)return;const d=e.changedTouches[0].clientX-x0;if(Math.abs(d)>45){go(cur+(d<0?1:-1));play()}x0=null});
-go(0);play();
-// pricing toggle
-let yr=false;const nums=document.querySelectorAll('.num');
-const fmt=n=>n.toLocaleString('en-IN');
-$('#sw').onclick=function(){yr=!yr;this.classList.toggle('y',yr);document.querySelectorAll('.per').forEach(p=>p.textContent=yr?' /year':' /month');
-nums.forEach(el=>{const from=parseInt(el.textContent.replace(/,/g,'')),to=+el.dataset[yr?'y':'m'],t0=performance.now();
-(function step(t){const k=Math.min((t-t0)/600,1),e=1-Math.pow(1-k,3);el.textContent=fmt(Math.round(from+(to-from)*e));if(k<1)requestAnimationFrame(step)})(t0)})};
-// phone simulation
-const panes=[0,1,2].map(i=>$('#p'+i)),pd=[...document.querySelectorAll('#pd i')],tt=['Scan document','Claim packet','Submitted'];
-let ps=0;
-function phone(){panes.forEach((p,i)=>p.classList.toggle('on',i===ps));pd.forEach((d,i)=>d.classList.toggle('on',i===ps));$('#pt').textContent=tt[ps];
-if(ps===0){const e=[...document.querySelectorAll('.ext div')];e.forEach(d=>d.classList.remove('on'));e.forEach((d,i)=>setTimeout(()=>d.classList.add('on'),600+i*700))}
-if(ps===1){const l=[...document.querySelectorAll('.chk li')];l.forEach(d=>d.classList.remove('on'));l.forEach((d,i)=>setTimeout(()=>d.classList.add('on'),500+i*600))}
-ps=(ps+1)%3}
-phone();setInterval(phone,4600);
-// reveal
-const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.12});
-document.querySelectorAll('.rv').forEach(el=>io.observe(el));
-</script>
-</body>
-</html>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const isPC=()=>innerWidth>=1024&&!/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+setTimeout(()=>$('#intro').classList.add('done'),1300);
+const io=new IntersectionObserver(e=>e.forEach(x=>{if(x.isIntersecting){x.target.classList.add('in');io.unobserve(x.target)}}),{threshold:.12});
+const obs=()=>$$('.rv:not(.in)').forEach(n=>io.observe(n));
+const tpas=['Medi Assist','Star Health','ICICI Lombard','HDFC ERGO','Bajaj Allianz','MDIndia','Vidal Health','Health India','Paramount','Care Health','Niva Bupa','New India Assurance','United India Insurance','Oriental Insurance','National Insurance','MJPJAY','PM-JAY Ayushman Bharat'];
+$('#mq').innerHTML=[...tpas,...tpas].map(t=>`<span class="px-5 py-2.5 rounded-full bg-white border font-semibold text-slate-600 whitespace-nowrap">${t}</span>`).join('');
+const P={0:{h:'CareVault Android App',s:'Admission Desk, Wards & Doctors',f:['Multi-page live camera scanner with Policy Card OCR auto-fill','1-tap WhatsApp missing-KYC request to patient attendants','Instant AI Claim Readiness Audit: what is missing and how to fix','Saved Doctor Digital Signature & Registration Stamp Pad','4-digit Quick Shift PIN','Offline scan queue']},
+1:{h:'CareVault Desktop Workspace',s:'PC Billing & Accounts Desk',f:['Drag-and-drop multi-file upload from flatbed scanners','Side-by-side split-screen document viewer + AI Claim Audit editor','Bulk 40-page flatbed PDF splitter & tagger (Pro & Enterprise)','HMS Excel/CSV itemized bill consumables auto-auditor (Pro & Enterprise)','Full-screen Claims & Settlements ledger + Accountant CSV export (Pro & Enterprise)','1-click < 4.5 MB TPA portal packet download + direct PC print (Ctrl+P)']}};
+const card=(k,on)=>`<article class="card p-7 tilt ${on?'ring-2 ring-teal-700':'opacity-70'}"><h3 class="jk text-xl font-extrabold">${P[k].h}</h3><p class="text-teal-800 font-semibold text-sm">${P[k].s}</p><ul class="mt-4 space-y-2.5 text-sm text-slate-700">${P[k].f.map(x=>`<li class="flex gap-2"><svg class="shrink-0 mt-0.5" width="16" height="16" viewBox="0 0 16 16"><path d="m3 8 3.5 3.5L13 5" fill="none" stroke="#10B981" stroke-width="2.2" stroke-linecap="round"/></svg>${x.replace('<','&lt;')}</li>`).join('')}</ul></article>`;
+const tab=n=>{$$('.tab').forEach(b=>b.setAttribute('aria-selected',b.dataset.t==n));$('#plat').innerHTML=card(0,n==0)+card(1,n==1);bindTilt()};
+$$('.tab').forEach(b=>b.onclick=()=>tab(b.dataset.t));
+const fmt=n=>'₹'+Math.round(n).toLocaleString('en-IN');
+const cur={};function anim(id,to,f){const el=$(id),from=cur[id]||0,t0=performance.now();cancelAnimationFrame(el._r);const st=t=>{const p=Math.min((t-t0)/500,1),e=1-Math.pow(1-p,3);el.textContent=f(from+(to-from)*e);if(p<1)el._r=requestAnimationFrame(st);else cur[id]=to};el._r=requestAnimationFrame(st)}
+function calc(){const c=+$('#c').value,a=+$('#a').value;$('#vc').textContent=c.toLocaleString('en-IN');$('#va').textContent=fmt(a);
+const leak=c*a*12*.05,net=leak*.6-9999*12;anim('#o1',leak,fmt);anim('#o2',Math.max(net,0),fmt);anim('#o3',net/(9999*12)*100,v=>Math.round(v)+'%')}
+$('#c').oninput=$('#a').oninput=calc;calc();
+const plans=[['Pilot','₹0','14-day pilot',['Android App: scanner, OCR, AI readiness audit','PC Desktop Workspace: split-screen auditor','Upgrade prompt for Pro tools'],0],
+['Solo OPD','₹1,499','per month',['Android App: full scanner, signature & stamp pad','PC Desktop Workspace: split-screen auditor & TPA packet export','Quick Shift PIN and offline queue'],0],
+['Hospital Pro','₹9,999','per month',['Everything in Solo OPD on Android','PC Desktop Workspace with Bulk PDF Splitter','HMS CSV consumables auto-auditor','Claims & Settlements ledger + CSV export'],1],
+['Enterprise','₹24,999','per month',['Everything in Hospital Pro on Android and PC','Multi-unit rollout and Maker -> Checker controls','Priority onboarding support'],0]];
+$('#price').innerHTML=plans.map((p,i)=>`<div class="card p-7 flex flex-col tilt rv ${p[4]?'ring-2 ring-teal-700':''}" style="--i:${i}">${p[4]?'<span class="absolute -top-3 left-6 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full">Most Popular</span>':''}<h3 class="jk font-extrabold text-xl">${p[0]}</h3><div class="mt-3"><span class="jk text-4xl font-extrabold">${p[1]}</span> <span class="text-slate-500 text-sm">${p[2]}</span></div><ul class="mt-5 space-y-2 text-sm text-slate-700 grow">${p[3].map(x=>`<li>• ${x.replace('->','→')}</li>`).join('')}</ul><a href="https://wa.me/?text=${encodeURIComponent('Hi CareVault, I want the '+p[0]+' plan.')}" target="_blank" rel="noopener" class="btn ${p[4]?'btn-p':'btn-d'} mt-6">Choose ${p[0]}</a></div>`).join('');
+const faqs=[['Do Android and PC stay in sync?','Yes. Nurses scan and audit on the Android app, and the same folders appear on the billing desk workspace under your hospital CV-ID.'],['Can I upload PDFs from a flatbed scanner?','Yes. Drag multi-page PDFs into the PC workspace. Pro and Enterprise add a bulk splitter that tags each page for the claim.'],['How does the 14-day pilot work?','Start on the ₹0 Pilot with no payment. After 14 days, pick a paid plan to continue; your data stays in your vault.'],['Is my hospital data kept separate?','Every hospital gets a tenant-isolated CV-ID vault with encrypted storage, aligned to the DPDP Act 2023.'],['How fast is activation after payment?','Pay by UPI and your plan activates in about 2–5 minutes.']];
+$('#fq').innerHTML=faqs.map(f=>`<div class="faq card"><button class="w-full flex justify-between items-center text-left p-5 font-semibold jk" aria-expanded="false">${f[0]}<span class="pl text-2xl transition-transform duration-500">+</span></button><div><p class="px-5 pb-5 text-slate-600">${f[1]}</p></div></div>`).join('');
+$$('.faq button').forEach(b=>b.onclick=()=>{const f=b.parentElement;f.classList.toggle('open');b.setAttribute('aria-expanded',f.classList.contains('open'))});
+function bindTilt(){$$('.card').forEach(c=>{if(c._b)return;c._b=1;c.addEventListener('pointermove',e=>{if(!matchMedia('(hover:hover)').matches)return;const r=c.getBoundingClientRect(),x=e.clientX-r.left,y=e.clientY-r.top;c.style.setProperty('--mouse-x',x+'px');c.style.setProperty('--mouse-y',y+'px');if(c.classList.contains('tilt')){c.style.setProperty('--ry',((x/r.width-.5)*6).toFixed(2)+'deg');c.style.setProperty('--rx',((.5-y/r.height)*6).toFixed(2)+'deg')}});c.addEventListener('pointerleave',()=>{c.style.setProperty('--rx','0deg');c.style.setProperty('--ry','0deg')})})}
+$$('.mag').forEach(b=>{b.addEventListener('pointermove',e=>{const r=b.getBoundingClientRect();b.style.transform=`translate(${(e.clientX-r.left-r.width/2)*.15}px,${(e.clientY-r.top-r.height/2)*.25-2}px)`});b.addEventListener('pointerleave',()=>b.style.transform='')});
+$$('.gate').forEach(b=>b.onclick=()=>isPC()?location.href='/workspace.html':$('#pcm').classList.add('show'));
+$('#cp').onclick=async e=>{const u=new URL('/workspace.html',location.href).href;try{await navigator.clipboard.writeText(u);e.target.textContent='Link copied. Paste it on your PC.'}catch(_){prompt('Copy this link:',u)}};
+$$('[data-m]').forEach(b=>b.onclick=()=>$('#'+b.dataset.m).classList.add('show'));
+$$('.modal').forEach(m=>m.addEventListener('click',e=>{if(e.target===m||e.target.hasAttribute('data-close'))m.classList.remove('show')}));
+addEventListener('keydown',e=>{if(e.key==='Escape')$$('.modal').forEach(m=>m.classList.remove('show'))});
+tab(0);obs();bindTilt();
+</script></body></html>
