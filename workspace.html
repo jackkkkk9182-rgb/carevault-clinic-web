@@ -61,7 +61,7 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--ink)}h1,h2,h3
 <script>
 /* ===== CONFIG: point these at your backend's real routes ===== */
 const API='https://carevault-wxdbatma.manus.space';
-const EP={login:'/api/auth/login',patients:'/api/patients',audit:id=>`/api/patients/${id}/audit`,claims:'/api/claims'};
+const PROC={login:'hospitalAuth.login',patients:'patients.list',audit:'claims.audit',claims:'claims.list'}; /* login is confirmed; the other three names are guesses, set them to your router's real procedures */
 /* ============================================================ */
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
 const PREVIEW=new URLSearchParams(window.location.search).get('preview')==='pc';
@@ -70,13 +70,22 @@ const PRO=['hospital pro','enterprise'];let S=JSON.parse(localStorage.getItem('c
 const show=id=>['gate','login','app'].forEach(x=>$('#'+x).classList.toggle('hidden',x!==id));
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const isPro=()=>S&&PRO.includes(String(S.plan).toLowerCase());
-async function api(p,o={}){const r=await fetch(API+p,{...o,headers:{'Content-Type':'application/json',Authorization:'Bearer '+(S?.token||''),...(o.headers||{})}});if(r.status===401){lockIt();throw Error('Session expired')}if(!r.ok)throw Error('Request failed ('+r.status+')');return r.json()}
+async function trpc(proc,input,mutation){
+const h={'Content-Type':'application/json'};if(S?.token&&proc!==PROC.login)h.Authorization='Bearer '+S.token;
+let url=`${API}/api/trpc/${proc}`;const o={method:mutation?'POST':'GET',headers:h};
+if(mutation)o.body=JSON.stringify({json:input===undefined?null:input});else if(input!==undefined)url+='?input='+encodeURIComponent(JSON.stringify({json:input}));
+let r;try{r=await fetch(url,o)}catch(e){const x=new Error('Cannot reach CareVault: '+(e.message||'network error')+' (no HTTP response; check your connection or the server CORS settings)');x.net=1;throw x}
+let b=null;try{b=await r.json()}catch(_){}
+const er=Array.isArray(b)?b[0]?.error:b?.error;
+if(!r.ok||er){const st=er?.json?.data?.httpStatus||r.status,m=er?.json?.message||er?.message||r.statusText||'Request failed';if(st===401&&proc!==PROC.login&&S)lockIt();const x=new Error(m+' (HTTP '+st+')');x.status=st;throw x}
+const d=Array.isArray(b)?b[0]?.result?.data:b?.result?.data;return d&&'json' in d?d.json:d}
 if(!PC){show('gate');$('#cpl').onclick=async()=>{try{await navigator.clipboard.writeText(location.href);$('#cpl').textContent='Link copied. Paste it on your PC.'}catch(_){prompt('Copy:',location.href)}}}
 else{S?enter():show('login')}
 $('#eye').onclick=()=>{const p=$('#pw'),h=p.type==='password';p.type=h?'text':'password';$('#eye').textContent=h?'Hide':'Show'};
 $('#lf').onsubmit=async e=>{e.preventDefault();$('#err').textContent='';$('#lb').textContent='Signing in…';
-try{const r=await fetch(API+EP.login,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({hospitalId:$('#hid').value.trim(),identifier:$('#usr').value.trim(),password:$('#pw').value})});if(!r.ok)throw Error(r.status===401?'Check your Hospital ID, email/phone and password.':'Sign-in failed ('+r.status+'). Try again.');
-const d=await r.json();S={token:d.token,hid:$('#hid').value.trim(),plan:d.plan||d.hospital?.plan||d.subscription?.tier||'Pilot'};localStorage.setItem('cv_auth',JSON.stringify(S));$('#pw').value='';enter()}catch(x){$('#err').textContent=x.message==='Failed to fetch'?'Cannot reach CareVault. Check your internet and try again.':x.message}$('#lb').textContent='Sign in'};
+try{const hid=$('#hid').value.trim(),d=await trpc(PROC.login,{hospitalId:hid,identifier:$('#usr').value.trim(),password:$('#pw').value},true);
+const tk=d?.token||d?.accessToken||d?.sessionToken;if(!tk)throw Error('Signed in, but the response had no token. Check the login response shape.');
+S={token:tk,hid,plan:d.plan||d.hospital?.plan||d.hospital?.subscriptionTier||d.subscription?.tier||'Pilot'};localStorage.setItem('cv_auth',JSON.stringify(S));$('#pw').value='';enter()}catch(x){$('#err').textContent=x.status===401?x.message+'. Check your Hospital ID, email/phone and password.':x.message}$('#lb').textContent='Sign in'};
 function enter(){show('app');$('#pt2').textContent='Connected • '+S.hid;$$('.lk').forEach(i=>i.textContent=isPro()?'':'🔒');acct();load();bump()}
 function lockIt(){$('#lock').classList.remove('hidden')}
 $('#ul').onclick=()=>{localStorage.removeItem('cv_auth');S=null;$('#lock').classList.add('hidden');show('login')};
@@ -86,8 +95,8 @@ $$('.nav[data-p]').forEach(b=>b.onclick=()=>go(b.dataset.p));
 function go(p){$$('.nav').forEach(n=>n.classList.toggle('on',n.dataset.p===p));$$('.pane').forEach(x=>x.classList.toggle('on',x.id===p));
 if(b=$(`.nav[data-p=${p}]`),b?.hasAttribute('data-pro')&&!isPro()){$('#'+p).innerHTML=`<div class="max-w-md bg-white border rounded-2xl p-8"><h2 class="jk text-xl font-extrabold">Available on Hospital Pro and Enterprise</h2><p class="mt-2 text-sm text-slate-600">Your hospital is on ${esc(S.plan)}. Upgrade to Hospital Pro (₹9,999/mo) to unlock this tool.</p><p class="mt-3 text-sm font-semibold">Open the CareVault Android App and go to Profile → Subscription &amp; Billing to upgrade.</p><a class="btn bo inline-block mt-4" href="mailto:carevaultclinic.in@gmail.com?subject=CareVault%20Plan%20Upgrade">Email support about your plan</a></div>`}}
 var b;
-async function load(){try{const p=await api(EP.patients);pats=p.patients||p||[];renderP()}catch(e){$('#pl').innerHTML=`<p class="text-sm text-red-600">${esc(e.message)}. Press Refresh to try again.</p>`}
-try{const c=await api(EP.claims);claims=c.claims||c||[]}catch(_){}renderL()}
+async function load(){try{const p=await trpc(PROC.patients);pats=p.patients||p||[];renderP()}catch(e){$('#pl').innerHTML=`<p class="text-sm text-red-600">${esc(e.message)}. Press Refresh to try again.</p>`}
+try{const c=await trpc(PROC.claims);claims=c.claims||c||[]}catch(_){}renderL()}
 $('#rf').onclick=load;
 function renderP(){const q=$('#q').value.toLowerCase(),l=pats.filter(p=>JSON.stringify(p).toLowerCase().includes(q));
 $('#pl').innerHTML=l.length?l.map(p=>`<button data-id="${esc(p.id)}" class="pt bg-white border rounded-xl p-4 text-left hover:border-teal-700 transition"><b>${esc(p.name||p.patientName)}</b><span class="text-xs text-slate-500 block">${esc(p.cvId||p.id)} ${esc(p.policyNo||'')}</span></button>`).join(''):'<p class="text-sm text-slate-500">No patient folders yet. Scan a patient on the Android app and it will appear here.</p>';
@@ -100,7 +109,7 @@ const dz=$('#dz');['dragover','drop'].forEach(e=>dz.addEventListener(e,x=>{x.pre
 function add(f){files=[...files,...f];$('#fl').textContent=files.map(x=>x.name).join(', ');$('#vw').innerHTML=files.map(x=>x.type==='application/pdf'?`<iframe class="w-full h-full min-h-[420px]" src="${URL.createObjectURL(x)}"></iframe>`:`<img class="w-full" src="${URL.createObjectURL(x)}" alt="${esc(x.name)}">`).join('');
 const mb=files.reduce((a,x)=>a+x.size,0)/1048576;$('#sz').textContent=mb.toFixed(2)+' MB';$('#bar').style.width=Math.min(mb/4.5*100,100)+'%';$('#bar').style.background=mb>4.5?'#F59E0B':'#10B981';$('#rd').textContent=mb>4.5?'Over 4.5 MB. Compress the packet before upload.':'Portal-ready: under 4.5 MB.'}
 $('#ra').onclick=async()=>{if(!sel)return $('#fg').innerHTML='<p class="text-amber-700">Pick a patient folder first.</p>';$('#fg').textContent='Auditing…';
-try{const d=await api(EP.audit(sel.id),{method:'POST'});const f=d.flags||d.issues||[];$('#fg').innerHTML=f.length?f.map(x=>`<div class="border border-amber-300 bg-amber-50 rounded-lg p-3"><b>Missing:</b> ${esc(x.missing||x.issue)}<br><b>Fix:</b> ${esc(x.fix||x.howToFix)}</div>`).join(''):'<p class="text-emerald-700 font-semibold">No flags. This claim is ready to submit.</p>'}catch(e){$('#fg').innerHTML=`<p class="text-red-600">${esc(e.message)}</p>`}};
+try{const d=await trpc(PROC.audit,{patientId:sel.id},true);const f=d.flags||d.issues||[];$('#fg').innerHTML=f.length?f.map(x=>`<div class="border border-amber-300 bg-amber-50 rounded-lg p-3"><b>Missing:</b> ${esc(x.missing||x.issue)}<br><b>Fix:</b> ${esc(x.fix||x.howToFix)}</div>`).join(''):'<p class="text-emerald-700 font-semibold">No flags. This claim is ready to submit.</p>'}catch(e){$('#fg').innerHTML=`<p class="text-red-600">${esc(e.message)}</p>`}};
 $('#pk').onclick=async()=>{if(!files.length)return alert('Add documents first.');const {PDFDocument}=PDFLib,out=await PDFDocument.create();
 for(const f of files){const b=await f.arrayBuffer();if(f.type==='application/pdf'){const s=await PDFDocument.load(b,{ignoreEncryption:true});(await out.copyPages(s,s.getPageIndices())).forEach(p=>out.addPage(p))}else{const im=f.type==='image/png'?await out.embedPng(b):await out.embedJpg(b),pg=out.addPage([595,842]),k=Math.min(555/im.width,802/im.height);pg.drawImage(im,{x:20,y:822-im.height*k,width:im.width*k,height:im.height*k})}}
 dl(new Blob([await out.save()],{type:'application/pdf'}),'TPA-packet.pdf')};
