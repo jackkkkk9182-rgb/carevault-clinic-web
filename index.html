@@ -61,7 +61,7 @@ input[type=range]{accent-color:var(--t);width:100%}
 <div class="mt-9 flex flex-col sm:flex-row gap-3 justify-center rv" style="--i:3">
 <a class="btn btn-p mag" href="https://github.com/jackkkkk9182-rgb/carevault-clinic-web/releases/download/v2.0.0/CareVault.apk">Download Android App (.apk) <small class="opacity-70 font-normal">v2.0 • Android 8.0+</small></a>
 <button class="btn btn-d mag gate">Open Desktop Workspace (PC Only)</button></div>
-<a class="inline-block mt-5 text-sm font-semibold text-teal-800 underline underline-offset-4 rv" style="--i:4" target="_blank" rel="noopener" href="https://wa.me/?text=Hi%20CareVault%2C%20I%27d%20like%20to%20book%20a%2015-minute%20hospital%20onboarding%20walkthrough.">Book a 15-Min Hospital Onboarding Walkthrough on WhatsApp</a>
+<a class="inline-block mt-5 text-sm font-semibold text-teal-800 underline underline-offset-4 rv" style="--i:4" href="mailto:carevaultclinic.in@gmail.com?subject=CareVault%20Hospital%20Onboarding%20Walkthrough">Book a 15-Min Hospital Onboarding Walkthrough</a>
 </div>
 
 <div id="workflow" class="max-w-5xl mx-auto mt-14 card p-4 sm:p-8 rv overflow-x-auto">
@@ -98,7 +98,8 @@ input[type=range]{accent-color:var(--t);width:100%}
 
 <section id="pricing" class="py-20 px-4"><div class="max-w-7xl mx-auto">
 <h2 class="jk font-extrabold text-3xl sm:text-5xl text-center tracking-tight">Simple monthly pricing</h2><p class="text-center text-slate-600 mt-3">Billed monthly. Every plan includes the Android app and PC Desktop Workspace access.</p>
-<div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5" id="price"></div></div></section>
+<div class="mt-10 grid sm:grid-cols-2 lg:grid-cols-4 gap-5" id="price"></div>
+<p class="mt-6 text-center text-sm text-slate-600">Create your hospital account in the CareVault Android App to start your 14-day pilot or upgrade anytime via UPI</p></div></section>
 
 <section id="faq" class="py-20 px-4"><div class="max-w-3xl mx-auto"><h2 class="jk font-extrabold text-3xl sm:text-4xl text-center tracking-tight">Questions hospital owners ask</h2><div class="mt-8 space-y-3" id="fq"></div></div></section>
 </main>
@@ -143,7 +144,9 @@ const plans=[['Pilot','₹0','14-day pilot',['Android App: scanner, OCR, AI read
 ['Solo OPD','₹1,499','per month',['Android App: full scanner, signature & stamp pad','PC Desktop Workspace: split-screen auditor & TPA packet export','Quick Shift PIN and offline queue'],0],
 ['Hospital Pro','₹9,999','per month',['Everything in Solo OPD on Android','PC Desktop Workspace with Bulk PDF Splitter','HMS CSV consumables auto-auditor','Claims & Settlements ledger + CSV export'],1],
 ['Enterprise','₹24,999','per month',['Everything in Hospital Pro on Android and PC','Multi-unit rollout and Maker -> Checker controls','Priority onboarding support'],0]];
-$('#price').innerHTML=plans.map((p,i)=>`<div class="card p-7 flex flex-col tilt rv ${p[4]?'ring-2 ring-teal-700':''}" style="--i:${i}">${p[4]?'<span class="absolute -top-3 left-6 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full">Most Popular</span>':''}<h3 class="jk font-extrabold text-xl">${p[0]}</h3><div class="mt-3"><span class="jk text-4xl font-extrabold">${p[1]}</span> <span class="text-slate-500 text-sm">${p[2]}</span></div><ul class="mt-5 space-y-2 text-sm text-slate-700 grow">${p[3].map(x=>`<li>• ${x.replace('->','→')}</li>`).join('')}</ul><a href="https://wa.me/?text=${encodeURIComponent('Hi CareVault, I want the '+p[0]+' plan.')}" target="_blank" rel="noopener" class="btn ${p[4]?'btn-p':'btn-d'} mt-6">Choose ${p[0]}</a></div>`).join('');
+$('#price').innerHTML=plans.map((p,i)=>`<div class="card p-7 flex flex-col tilt rv ${p[4]?'ring-2 ring-teal-700':''}" style="--i:${i}">${p[4]?'<span class="absolute -top-3 left-6 bg-amber-500 text-white text-xs font-bold px-3 py-1 rounded-full">Most Popular</span>':''}<h3 class="jk font-extrabold text-xl">${p[0]}</h3><div class="mt-3"><span class="jk text-4xl font-extrabold">${p[1]}</span> <span class="text-slate-500 text-sm">${p[2]}</span></div><ul class="mt-5 space-y-2 text-sm text-slate-700 grow">${p[3].map(x=>`<li>• ${x.replace('->','→')}</li>`).join('')}</ul><button type="button" class="plan btn ${p[4]?'btn-p':'btn-d'} mt-6">${['Start Free Pilot','Get Solo OPD','Get Hospital Pro','Get Enterprise'][i]}</button></div>`).join('');
+const APK='https://github.com/jackkkkk9182-rgb/carevault-clinic-web/releases/download/v2.0.0/CareVault.apk';
+$$('.plan').forEach(b=>b.onclick=()=>{if(isPC()){location.href='/workspace.html'}else{const a=document.createElement('a');a.href=APK;a.download='CareVault.apk';document.body.appendChild(a);a.click();a.remove()}});
 const faqs=[['Do Android and PC stay in sync?','Yes. Nurses scan and audit on the Android app, and the same folders appear on the billing desk workspace under your hospital CV-ID.'],['Can I upload PDFs from a flatbed scanner?','Yes. Drag multi-page PDFs into the PC workspace. Pro and Enterprise add a bulk splitter that tags each page for the claim.'],['How does the 14-day pilot work?','Start on the ₹0 Pilot with no payment. After 14 days, pick a paid plan to continue; your data stays in your vault.'],['Is my hospital data kept separate?','Every hospital gets a tenant-isolated CV-ID vault with encrypted storage, aligned to the DPDP Act 2023.'],['How fast is activation after payment?','Pay by UPI and your plan activates in about 2–5 minutes.']];
 $('#fq').innerHTML=faqs.map(f=>`<div class="faq card"><button class="w-full flex justify-between items-center text-left p-5 font-semibold jk" aria-expanded="false">${f[0]}<span class="pl text-2xl transition-transform duration-500">+</span></button><div><p class="px-5 pb-5 text-slate-600">${f[1]}</p></div></div>`).join('');
 $$('.faq button').forEach(b=>b.onclick=()=>{const f=b.parentElement;f.classList.toggle('open');b.setAttribute('aria-expanded',f.classList.contains('open'))});
