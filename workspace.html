@@ -64,7 +64,8 @@ const API='https://carevault-wxdbatma.manus.space';
 const EP={login:'/api/auth/login',patients:'/api/patients',audit:id=>`/api/patients/${id}/audit`,claims:'/api/claims'};
 /* ============================================================ */
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
-const PC=innerWidth>=1024&&!/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+const PREVIEW=new URLSearchParams(window.location.search).get('preview')==='pc';
+const PC=PREVIEW||(innerWidth>=1024&&!/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent));
 const PRO=['hospital pro','enterprise'];let S=JSON.parse(localStorage.getItem('cv_auth')||'null'),files=[],pats=[],claims=[],sel=null,idle;
 const show=id=>['gate','login','app'].forEach(x=>$('#'+x).classList.toggle('hidden',x!==id));
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
