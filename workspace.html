@@ -69,7 +69,7 @@ body{font-family:Inter,sans-serif;background:var(--bg);color:var(--ink)}h1,h2,h3
 const API='https://carevault-wxdbatma.manus.space';
 const P={login:'hospital.account.login',me:'hospital.account.me',bill:'hospital.billing.summary',pats:'hospital.patients.list',claims:'hospital.claims.list',packet:'hospital.claims.updatePacket',fin:'hospital.claims.updateFinancials',up:'hospital.documents.uploadAndExtract',audit:'hospital.claims.audit'};
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
-const PC=innerWidth>=1024&&!/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+const PC=new URLSearchParams(window.location.search).get('preview')==='pc'||(innerWidth>=1024&&!/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent));
 let S=JSON.parse(localStorage.getItem('cv_auth')||'null'),files=[],pats=[],claims=[],sel=null,claim=null,bill=null,idle;
 const save=()=>localStorage.setItem('cv_auth',JSON.stringify(S));
 const show=id=>['gate','login','app'].forEach(x=>$('#'+x).classList.toggle('hidden',x!==id));
